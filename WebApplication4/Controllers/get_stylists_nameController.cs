@@ -13,7 +13,7 @@ namespace WebApplication4.Controllers
 {
     public class datas
     {
-        public string id;
+        public Int32 id;
         public string first_name;
         public string last_name;
         public string address_line_01;
@@ -27,9 +27,10 @@ namespace WebApplication4.Controllers
         public string term_and_conditions;
         public string charge_per_slot;
         public string job_role_id;
+        public string src;
     }
 
-
+    /**Names of the stylist for search menu*/
     public class get_stylists_nameController : ApiController
     {
          // GET api/get_stylists_name
@@ -66,8 +67,10 @@ namespace WebApplication4.Controllers
           
         }
 
+
+        /** All details of required stylist for search result*/
         // GET api/get_stylists_name
-        public List<object> GetAllStylistsName(int id)
+        public List<object> GetOneStylistDetails(int id)
         {
             List<object> details = new List<object>();
             int job_role_id=0;
@@ -80,13 +83,13 @@ namespace WebApplication4.Controllers
             using (SqlConnection con = new SqlConnection(CS))
             {
                 con.Open();
-                SqlCommand cmd = new SqlCommand("SELECT * FROM trn_stylist WHERE ID = '"+ id +"'", con);
+                SqlCommand cmd = new SqlCommand("SELECT * FROM trn_stylist LEFT JOIN proImages ON trn_stylist.profile_id = proImages.id WHERE trn_stylist.profile_id = '" + id +"'", con);
 
                 SqlDataReader rdr = cmd.ExecuteReader();
                 while (rdr.Read())
                 {
                     
-                    d.id = rdr["id"].ToString();
+                    d.id = Convert.ToInt32(rdr["profile_id"]);
                     d.first_name = rdr["first_name"].ToString();
                     d.last_name = rdr["last_name"].ToString();
                     d.address_line_01 = rdr["address_line_01"].ToString();
@@ -100,7 +103,8 @@ namespace WebApplication4.Controllers
                     d.term_and_conditions = rdr["term_and_conditions"].ToString();
                     d.charge_per_slot = rdr["charge_per_slot"].ToString();
                     job_role_id = Convert.ToInt32(rdr["job_role_id"]);
-                    
+                    d.src = rdr["proPic"].ToString();
+
 
                 }
 
